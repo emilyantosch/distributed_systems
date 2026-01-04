@@ -1,15 +1,15 @@
-#import "@preview/grape-suite:3.1.0": seminar-paper, german-dates, citation
+#import "@preview/grape-suite:3.1.0": citation, german-dates, seminar-paper
 #import "@preview/equate:0.3.2": equate
-#import "@preview/frame-it:1.2.0": *
-#import "@preview/codly:1.0.0": *
+#import "@preview/frame-it:2.0.0": *
+#import "@preview/codly:1.3.0": *
 #show: codly-init.with()
 
 #show: equate.with(breakable: true, sub-numbering: true)
 #set math.equation(numbering: "(1.1)")
 
 #let (bsolution, code) = frames(
-    bsolution: ("Lösung",),
-    code: ("Code",)
+  bsolution: ("Lösung",),
+  code: ("Code",),
 )
 
 #show: frame-style(styles.boxy)
@@ -29,279 +29,195 @@
     name: text(font: "JetBrainsMono NFM", " Python", weight: "bold"),
     icon: text(font: "JetBrainsMono NFM", "\u{e73c}", weight: "bold"),
     color: rgb("#79C635"),
-  )
+  ),
 ))
 
-#import seminar-paper: todo, definition, sidenote
+#import seminar-paper: definition, sidenote, todo
 #import citation: *
 
 #show: seminar-paper.project.with(
-    title: "Einsendeaufgabe 1",
-    subtitle: "Architekturen und Prozesse",
+  title: "Einsendeaufgabe 3",
+  subtitle: "Replikation und Konsistenz",
 
-    university: [FernUniversität in Hagen],
-    faculty: [Fakultät für Mathematik und Informatik],
-    docent: [Prof. Dr. Christian Icking],
-    institute: [Kooperative Systeme],
-    seminar: [Verteilte Systeme],
-    show-declaration-of-independent-work: false,
-    semester: german-dates.semester(datetime.today()),
+  university: [FernUniversität in Hagen],
+  faculty: [Fakultät für Mathematik und Informatik],
+  docent: [Prof. Dr. Christian Icking],
+  institute: [Kooperative Systeme],
+  seminar: [Verteilte Systeme],
+  show-declaration-of-independent-work: false,
+  semester: german-dates.semester(datetime.today()),
 
-    submit-to: [Eingereicht bei],
-    submit-by: [Eingereicht durch],
+  submit-to: [Eingereicht bei],
+  submit-by: [Eingereicht durch],
 
-    author: "Emily Lucia Antosch",
-    email: "emilyluciaantosch@web.de",
-    address: [
-        Hamburg
-    ]
+  author: "Emily Lucia Antosch",
+  email: "emilyluciaantosch@web.de",
+  address: [
+    Hamburg
+  ],
 )
 
-= Aufgabe 1.1
-== Aufgabe 1.1.1
-Eine Ressource im Internet wird durch einen Universal Resource Locator (URL)
-identifiziert. Erklären Sie alle Informationen, die in
-$
-#link("https://www.fernuni-hagen.de/mi/studium/")
-$
-enthalten sind.
+= Aufgabe 3.1
+Betrachten Sie die Ausführungsgeschichte der vier Prozesse $P_1$, $P_2$, $P_3$ und $P_4$:
+1. Ist diese Ausführungsgeschichte *sequentiell* konsistent?
+2. Ist diese Ausführungsgeschichte *kausal* konsistent?
 
-#bsolution[Lösung 1.1.1][
-Die folgenden Infos lassen sich aus der
-$
-#link("https://www.fernuni-hagen.de/mi/studium/")
-$
-herauslesen:
+Bitte begründen Sie Ihre Antwort.
 
-- Das Protokoll ist *"https://"* (HyperText Transport Protocol Secure), welches
-  für
-  - Die Subdomain *"www"*, die eine Unterdomäne von "fernuni-hagen" ist.
-  - Den Namen *"fernuni-hagen"* der Webseite, der mittels eines DNS dann in
-  eine IP-Adresse umgewandelt wird
-  - Die TLD(Top-Level-Domain) *".de"*, welche die Seite mit dem Land
-  Deutschland verbindet/identifiziert.
-  - Der Pfad *"/mi/studium/"*, welche den User auf eine Unterseite routet. Das
-  trailing Slash deutet daraufhin, dass es sich um ein Verzeichnis handelt, was
-  dann wahrscheinlich auf `index.html` weiterleitet. ]
-
-== Aufgabe 1.1.2
-
-Inwiefern stellt die Verwendung von URLs eine Möglichkeit dar, Ortstransparenz
-zu erreichen? Warum bieten URLs mit Hilfe des DNS auch Replikationstransparenz?
-
-#bsolution[Lösung 1.1.2][
-Die Verwendung von URLs stellt eine Möglichkeit dar, Ortstransparenz zu erreichen, indem
-
-1. die Ressourcen nicht nach geographischen Orten, sondern logisch geordnet werden,
-2. die URL darüber hinaus Details des Netzwerks und dessen Topologie abstrahiert, muss sich der User nicht mit der IP-Adresse oder der Position des Servers beschäftigen und
-3. die URL statisch und unveränderlich bleiben kann, auch wenn die Ressource selbst sich von einem Data Center zu einem anderen bewegt.
+#bsolution[Lösung 3.1][
+  1. Die Ausführungsgeschichte ist nicht sequentiell konsistent, da in P3, im Gegensatz zu P4, die Lesereihenfolge von x erst 1, dann 3 und dann 2 ist. Dies ist inkonsistent mit der Reihenfolge von P4, da hier eine Reihenfolge von 1, dann 2 und dann 3 gesetzt ist.
+  2. Die Ausführungsgeschichte ist auch nicht kausal konsistent, da wir keine Möglichkeit finden, die alle kausalen Ketten mit der Ausführungsgeschichte zu vereinen. Wenn wir eine Reihenfolge von x = nil, 1, 2, 3 wählen, dann brechen wir die Kausalkette in P3, die erst 3 und dann zwei liest, aber genügen der in P4. Wenn wir die Reihenfolge x = nil, 1, 3, 2 wählen, genügen wir der Kausalkette in P3, brechen aber die P4. Da wir keine anderen Reihenfolgen zulassen können (P2, P3, P4) lesen als erste Aktion $x = 1$, gibt es keine Kette an Aktionen, die allen kausalen Ketten genügt.
 ]
 
-== Aufgabe 1.1.3
+#pagebreak()
+= Aufgabe 3.2
 
-Betrachten wir das E-Mail-System im Internet, wobei die Prozesse Mail User
-Agent und Message Transfer Agent (Mail-Server) daran beteiligt sind. Welche
-Prozesse gehören zur Anwendungsschicht und welche zur Middleware-Schicht?
-Welche Prozesse sind zeitlich entkoppelt (temporally decoupled), aber
-referentiell gekoppelt (referentially coupled)?
+In einem System von $n$ Servern $S_1, ..., S_n$ mit replizierten Daten soll die client-zentrierte Konsistenz gewährleistet werden. Clients schicken Anfragen mit Lese- oder Schreiboperationen an das System, die jeweils von genau einem der Server bearbeitet und beantwortet werden.
+1. Welche Operationen müssen im System verbreitet werden?
+2. Die Verbreitung der Operationen soll mit Hilfe von einem Vektor-Uhr-System realisiert werden.
+  - Was bedeuten die einzelnen Komponenten der Vektor-Uhr?
+  - Wie kann eine verbreitete Operation eindeutig im System identifiziert werden?
+  - Wie gibt ein Server einem anderen Server Operationen weiter?
+  - Wie aktualisiert ein Server seine Vektor-Uhr, wenn er Operationen von einem anderen Server erhalten hat?
+3. Für alle vier Arten der client-zentrierten Konsistenz geben Sie jeweils bitte an, welche Informationen ein Client bei Anfragen mitliefern muss und was ein Server sicherstellen muss, bevor er die Antwort zurückschickt.
 
-#bsolution[Lösung 1.1.3][
-- Der Prozess _Mail User Agent_ ist Teil der Anwendungsschicht und ist referentiell gekoppelt, aber zeitlich entkoppelt. Der _Mail User Agent_ ist direkter Teil der Anwendung, die dem User bereitgestellt wird. Um eine Nachricht zu senden, muss der _Mail User Agent_ wissen, wohin die Nachricht gehen soll (E-Mail Adresse), da sie sonst nicht dahin kommt, wo sie hin soll. Ein _Mail User Agent_, sowohl beim Senden als auch beim Empfangen muss nicht gleichzeitig aktiv sein, da die Nachricht persistent in der Middleware gespeichert werden.
-- Der Prozess _Mail Transfer Agent_ ist Teil der Middleware-Schicht und ist referentiell gekoppelt, aber zeitlich entkoppelt. Der _Mail Transfer Agent_ ist Teil der Middleware-Schicht, die sich darum kümmert, dass die Nachricht, die vom Sender kommt an den Empfänger gelangt. Um eine Nachricht weiterleiten zu können, muss der _Mail Transfer Agent_ wissen, vom wem die Nachricht kommt und wohin die Nachricht gehen soll, weshalb der _Mail Transfer Agent_ referentiell gekoppelt ist. Dabei muss der _Mail Transfer Agent_, solange eine andere Middleware die Nachricht zwischenspeichert, bis der _Mail Transfer Agent_ bereit ist, nicht aktiv sein, wenn der Sender die Nachricht an den Empfänger schickt.
+#bsolution[Lösung 3.2][
+  1. Grundsätzlich müssen nur Schreiboperationen im System verbreitet werden, da Leseoperationen nichts an der Konsistenz des Systems selbst ändern und auch nur lokal auf dem Server ausgeführt werden.
+  2. Eine Vektor-Uhr zeigt an, zu welchem Zeitpunkt welche Aktion ausgeführt wurde. In einem System mit $n$ Servern wird eine Vektor-Uhr mitgeführt, die $n$ Komponente hat. Jeder Server führt dabei seine eigene Vektor-Uhr. Für den $i$-ten Server stellt $"VC"[i]$ den Zeitwert der derzeitigen Aktion dar. Alle anderen Werte stellen für den selben Server die Menge der Aktionen dar, die von den anderen Servern gemacht wurden, von denen der Server $i$ weiß. Eine Operation kann klar durch das Paar (`server_id`, `timestamp`) definiert werden. (Beispiel (A, 8), also Server A zum Zeitpunkt 8). Wenn ein Server $S_i$ einem anderen Server $S_j$ eine Aktion weitergeben will, dann muss dieser die Operation(en) selbst übergeben und den Zeitstempel für jede Operation. Diese Infos können dann dem Server $S_j$ den nötigen Kontext geben, um die Operationen erfolgreich abzuschließen. Wenn $S_j$ dann seine interne Zeit updaten will, dann nimmt er `max(ts_i, ts_j)` für jede Komponente, um die Kausalität zu updaten. Nach dem Abschließen der Aktion wird der Zeitstempel $"VC"[j] + 1$ gerechnet.
+]
+#bsolution[Lösung 3.2][
+  3. Für die vier Arten der client-zentrierten Konsistenz:
+    - Monotones Lesen
+      - Der Client muss die Menge an Schreiboperationen bereitstellen, die für die Leseoperation relevant sind
+      - Der Server muss bereitstellen, dass alle Schreiboperationen durchgeführt worden sind. Falls dies nicht der Fall ist, muss der Server sich die relevanten Infos von anderen Services anfragen oder die Daten an einen Service weiterleiten
+    - Monotones Schreiben
+      - Der Client muss die Menge an Schreiboperationen bereitstellen, die von dem Client durchgeführt worden sind
+      - Der Server muss bereitstellen, dass alle Schreiboperationen in der richtigen Reihenfolge durchgeführt worden sind. Falls dies nicht der Fall ist, muss der Server sich die relevanten Infos von anderen Services anfragen oder die Daten an einen Service weiterleiten. Falls eine weitere Schreiboperation durchgeführt werden musste, muss das in der Menge der Schreiboperationen zu sehen sein.
+    - Read your Writes
+      - Der Client muss die Menge an Schreiboperationen bereitstellen, die von dem Client durchgeführt worden sind.
+      - Der Server muss bereitstellen, dass alle Schreiboperationen durchgeführt worden sind. Erst wenn das bereitgestellt worden ist, darf die entsprechende Leseoperation durchgeführt werden.
+    - Writes Follow Reads
+      - Der Client muss die Menge an Schreiboperationen bereitstellen, die für die Leseoperation relevant sind. Und die Menge an Schreiboperationen, die vom Client ausgeführt worden sind.
+      - Der Server muss bereitstellen, dass alle Schreiboperationen durchgeführt worden sind. Erst danach dürfen eventuelle Schreiboperationen durchgeführt werden. Im Anschluss muss sowohl die Menge von Schreiboperationen, die für das Lesen relevant sind, geupdated werden, als auch die Menge aller Schreiboperationen.
+]
+
+#pagebreak()
+= Aufgabe 3.3
+
+Abbildung 1 zeigt die Ausführung der Prozesse P0, P1 und P2, die durch Nachrichtenaustausch kommunizieren, dabei werden Nachrichten $m_i$, $i = 0, ... , 7$ gesendet und empfangen. Prozess $P_i$ setzt unabhängig die Checkpoints $C_"ij"$ mit $i = 0, 1, 2$ und $j = 0, 1, 2$ ohne Koordination. Jeder Prozess startet mit einem initialen Checkpoint $C_"i0"$ mit $i = 0, 1, 2$.
+1. Gibt es einen Dominoeffekt (domino effect), wenn Prozess P2 nach dem Senden von Nachricht m6 ausfällt und eine Wiederherstellung (rollback recovery) startet?
+2. Wo liegt die Recovery line?
+
+#bsolution[Lösung 3.3][
+  1. Ja, durch den Fehler nach $m_6$ gibt es einen Dominoeffekt, der sich solange durchzieht, bis das System zum Initalzustand zurückspringt. Da das Absenden von $m_6$ durch den Rollback vergessen worden ist, kommt die Nachricht für $P_1$ aus dem Nichts und ist inkonsistent. Daher muss auch hier ein Rollback passieren. Dadurch vergisst $P_1$ $m_7$ und für $P_0$ kommt diese auch aus dem Nichts und muss einen weiteren Rollback machen. Die Linie ergibt sich als:
+  #equate(number-mode: "label", sub-numbering: false)[
+    $
+      C_"22" -> m_6 -> C_"12" -> m_7 -> C_"02" -> m_5 -> C_"21" -> m_4 -> C_"11" \
+      -> m_3 -> C_"01" -> m_2 -> C_"20" -> m_1 -> C_"10" -> m_0 -> C_"00"
+    $
+  ]
+  2. Dadurch ergibt sich auch direkt, dass die Recovery Line ${C_"00", C_"10", C_"20"}$ ist.
 ]
 
 
 #pagebreak()
 
-= Aufgabe 1.2
+= Aufgabe 3.4
+1. In einer Gruppe von 3 Prozessen, P1, P2 und P3, werden fünf Multicast-Nachrichten an die ganze Gruppe gesendet, wobei die Nachrichten 1 und 4 von P1 kommen, Nachricht 2 von P2 und die Nachrichten 3 und 5 von P3.
+  - Wie viele Auslieferungsreihenfolgen der Nachrichten gibt es hier beim atomaren Multicasting?
+  - Wenn wir jetzt voraussetzen, dass P1 die Nachricht 1 vor 4 sendet und P3 die Nachricht 3 vor 5, welche Auslieferungsreihenfolgen sind nun beim FIFO-atomaren Multicasting zulässig?
+  - Außerdem nehmen wir noch an, dass P1 die Nachricht 2 vor dem Absenden von 4 und P3 die Nachricht 1 vor dem Absenden von 3 ausgeliefert hat. Welche Auslieferungsreihenfolgen der Nachrichten sind noch zulässig beim kausalen atomaren Multicasting? Bitte geben Sie diese Auslieferungsreihenfolgen an.
+2. Betrachten wir jetzt Abbildung 2, in der die Reihenfolge der Punkte auf einem Zeitstrahl die Reihenfolge des Absendens und Empfangens der Nachrichten darstellt. Prozesse P1, P2 und P3 führen den Algorithmus zum Erzwingen kausaler Kommunikation aus (siehe Note 6.4 ab Seite 321), um die Nachrichten der Anwendungsschicht in einer kausalen Ordnung auszuliefern.
+  - Geben Sie zu jeder Nachricht den Zeitstempel beim Senden und bei der Auslieferung an.
+  - In welcher Reihenfolge werden die fünf Nachrichten jeweils von P1, P2 und P3 ausgeliefert?
+  - Realisiert der Algorithmus ein atomar kausales Multicasting?
 
-Erklären Sie kurz, wie Publish-Subscribe-Systeme sich von (klassischen) eng
-gekoppelten Systemen unterscheiden.
-
-#bsolution[Lösung 1.2][
-Ein Publish-Subscriber Model definiert sich hauptsächlich darüber, dass der
-Publisher und der Subscriber stark entkoppelt sind. Der Publisher und der
-Subscriber kennen sich häufig nicht mal direkt. Der Publisher veröffentlich bei
-einem Event eine Nachricht und ein Subscriber abonniert bestimmte Nachrichten
-von Events. Die Kommunikation passiert über Middleware. Meistens müssen
-Subscriber und Publisher nicht gleichzeitig aktiv sein. In einem gekoppelten
-System kennen die Teilnehmer einander direkt. Kommunikation passiert über ein
-Protokoll direkt und beide Teilnehmer müssen zwangsläufig aktiv sein.
+#bsolution[Lösung 3.4][
+  1. Die Antworten lauten:
+    - Hier gibt es $120 = 5!$ Auslieferungsreihenfolgen, wenn wir nur atomares Mutlicasting ohne weitere Constraints annehmen. (Die Menge an Möglichkeiten für 5 Elemente mit Reihenfolge)
+    - Es gibt $30 = 10 #sym.dot 3$ Auslieferungsreihenfolgen, da wir für 1 vor 4, 10 Möglichkeiten haben, die Nachrichten zu platzieren. Für 3 vor 5 bleiben noch jeweils 3 Plätze offen, wodurch sich pro Möglichkeit für 1 vor 4, 3 weitere Möglichkeiten ergeben (Nachricht 2 hat nur noch eine Lösung).
+    - Hier gibt es nach den Regeln 1 vor 4, 3 vor 5, 2 vor 4 und 1 vor 3 noch 9 Möglichkeiten:
+  #equate(sub-numbering: false)[
+    $
+      {1, 2, 3, 4, 5}\
+      {1, 2, 3, 5, 4}\
+      {1, 2, 4, 3, 5}\
+      {1, 3, 2, 5, 4}\
+      {1, 3, 2, 4, 5}\
+      {1, 3, 5, 2, 4}\
+      {2, 1, 3, 4, 5}\
+      {2, 1, 3, 5, 4}\
+      {2, 1, 4, 3, 5}\
+    $
+  ]
+]
+#bsolution[Lösung 3.4][
+  2. Wir gehen nun alle Events durch (Startzustand (0,0,0)):
+    - P2 sendet Nachricht 2
+      - $m_2 = (0, 1, 0)$
+    - P1 sendet Nachricht 1
+      - $m_1 = (1, 0, 0)$
+    - P3 bekommt Nachricht 1
+      - $P_3 = (0, 0, 0)$
+      - $m_1 = (1, 0, 0)$
+      - $P_3 = (1, 0, 0)$
+    - P3 sendet Nachricht 3
+      - $m_3 = (1, 0, 1)$
+    - P2 buffert Nachricht 3
+      - $P_2 = (0, 1, 0)$
+      - $m_3 = (1, 0, 1)$
+    - P2 bekommt Nachricht 1
+      - $P_2 = (0, 1, 0)$
+      - $m_1 = (1, 0, 0)$
+      - $P_2 = (1, 1, 0)$
+    - P2 bekommt Nachricht 3
+      - $P_2 = (1, 1, 0)$
+      - $m_1 = (1, 0, 1)$
+      - $P_2 = (1, 1, 1)$
+    - P1 bekommt Nachricht 2
+      - $P_1 = (1, 0, 0)$
+      - $m_2 = (0, 1, 0)$
+      - $P_2 = (1, 1, 0)$
+    - P3 sendet Nachricht 5
+      - $m_5 = (1, 0, 2)$
+    - P1 sendet Nachricht 4
+      - $m_4 = (2, 1, 0)$
+    - P3 buffert Nachricht 4
+      - $P_3 = (1, 0, 2)$
+      - $m_4 = (2, 1, 0)$
+    - P1 buffert Nachricht 5
+      - $P_1 = (2, 1, 0)$
+      - $m_5 = (1, 0, 2)$
+]
+#bsolution[Lösung 3.5][
+  - P2 bekommt Nachricht 4
+    - $P_2 = (1, 1, 1)$
+    - $m_4 = (2, 1, 0)$
+    - $P_2 = (2, 1, 1)$
+  - P3 bekommt Nachricht 2
+    - $P_3 = (1, 0, 2)$
+    - $m_2 = (0, 1, 0)$
+    - $P_3 = (1, 1, 2)$
+  - P3 bekommt Nachricht 4
+    - $P_3 = (1, 1, 2)$
+    - $m_4 = (2, 1, 0)$
+    - $P_3 = (2, 1, 2)$
+  - P2 bekommt Nachricht 5
+    - $P_2 = (1, 1, 1)$
+    - $m_5 = (1, 0, 2)$
+    - $P_2 = (1, 1, 2)$
+  - P1 bekommt Nachricht 3
+    - $P_1 = (2, 1, 0)$
+    - $m_3 = (1, 0, 1)$
+    - $P_1 = (2, 1, 1)$
+  - P1 bekommt Nachricht 5
+    - $P_1 = (2, 1, 1)$
+    - $m_3 = (1, 0, 2)$
+    - $P_1 = (2, 1, 2)$
+  - Die Reihenfolge pro Prozess lautet also:
+    - $P_1 = {1,2,4,3,5}$
+    - $P_2 = {2,1,3,4,5}$
+    - $P_3 = {1,3,5,2,4}$
+  - Und damit ergibt sich auch eine kausale, aber nicht atomare Auslieferungsreihenfolgen, da sich keine totale Reihenfolge aus den Auslieferungsreihenfolgen der Prozesse ablesen lässt.
 ]
 
-#pagebreak()
-= Aufgabe 1.3
-== Aufgabe 1.3.1
-
-Was ist der Unterschied zwischen vertikaler Verteilung (engl. vertical distribution) und
-horizontaler Verteilung (engl. horizontal distribution)?
-
-#bsolution[Lösung 1.3.1][
-    - Bei vertikaler Verteilung werden verschiedene Aufgaben eines System auf verschiedene Server verteilt. Dabei übernimmt dann eine Maschine eine bestimmte Aufgabe und eine andere Maschine eine völlig andere, wobei dann Informationen zwischen den Maschinen hin- und hergeschickt werden.
-    - Bei der horizontalen Verteilung werden die gleichen Aufgaben auf verschiedene Maschinen verteilt. So hat jede Maschine, die im verteilten System ist, die gleichen Aufgaben und der Load wird einfach über die Maschinen verteilt.
-]
-
-== Aufgabe 1.3.2
-
-In einem Peer-to-Peer-System werden Ressourcen von Hosts im Internet angeboten.
-Wozu benötigt man ein Overlay-Netzwerk für ein Peer-to-Peer-System?
-
-#bsolution[Lösung 1.3.2][
-
-    In eine P2P-System sind beide Teilnehmer, also Peer 1 und Peer 2
-    gleichberechtigt und dienen sowohl als Client und Server. Häufig ist es in
-    einem P2P-Netzwerk schwierig, andere Teilnehmer zu finden, eine Verbindung
-    herzustellen oder eine Rechte-Struktur aufzubauen. Ein Overlay-Netwerk kann
-    dann dabei helfen. Das Overlay-Netzwerk erlaubt effizientes Nachschlagen
-    von möglichen Verbindungen und deterministisches Routing von Verbindungen.
-
-]
-
-== Aufgabe 1.3.3
-
-Was ist ein strukturiertes Overlay-Netzwerk?
-
-
-#bsolution[Lösung 1.3.3][
-
-    Ein sturkturiertes Overlay-Netwerk ist ein Netzwerk, in dem eine
-    deterministische Netzwerktopologie das Ansteuern von Nodes (Teilnehmer des
-    P2P) unterstützt. Eine Netzwerktopologie kann zum Beispiel Ring oder Gitter
-    sein. Dabei stellt das Netzwerk dann die Möglichkeit bereit, dass jeder
-    Teilnehmer mittels einer Hash-Funktion angeprochen werden kann und über die
-    logische Netzwerktopologie angeprochen werden kann.
-
-]
-
-== Aufgabe 1.3.4
-
-Beim Routing in einem strukturierten Overlay-Netzwerk werden die Nachrichten gemäß
-der logischen Verbindung von Peers gesendet. Ist der kürzeste Weg zwischen zwei Peers
-im Overlay-Netzwerk immer auch der kürzeste Weg zwischen ihnen im physischen
-Netzwerk? Begründen Sie Ihre Antwort.
-
-#bsolution[Lösung 1.3.4][
-
-    Nein, es wird nicht zwangsläufig der kürzeste Weg zwischen zwei Peers im
-    Overlay-Netwerk genutzt. Die physische Topologie ist zwar eine Variable,
-    die die Topologie des Overlay-Netwerks bestimmen kann, aber es gibt auch
-    Fälle, in dem die logische Verteilung von Maschinen im Overlay-Netzwerk
-    dazu führt, das logisch weit entfernte Systeme, auch wenn sie direkt
-    nebeneinander physisch liegen, logisch über mehrere Nodes geleitet werden.
-
-]
-
-== Aufgabe 1.3.5
-
-Wir betrachten ein System aus super peers und weak peers, das Anfragen zu Dateien
-beantworten kann.
-- Welche Informationen soll der Index von super peers mindestens speichern?
-- Welche Informationen muss ein weak peer beim Eintreten in das System seinem super peer mitteilen?
-- Was muss ein super peer tun, wenn sich ein weak peer bei ihm abmeldet?
-
-#bsolution[Lösung 1.3.5][
-
-- Ein Index von Super Peers muss speichern, welche Daten es überhaupt gibt. Es muss aber auch speichern, wo diese Daten im eigenen Netzwerk von Weak Peers zu finden sind.
-- Ein Weak Peer muss bei der Registrierung in einem System an den Super Peer melden, wie der Super Peer den Weak Peer erreichen können (Adresse). Und ein Weak Peer muss mitteilen, welche Daten über ihn erreichbar sind.
-- Wenn ein Weak Peer das System verlässt, entweder mit Absicht oder durch einen Problem, muss der Super Peer den Weak Peer aus dem Index löschen, ihn aus der Liste der verbundenen Clients löschen und die Menge an verbundenen Clienten anpassen. Wenn der Weak Peer das System mit Absicht verlässt, muss er sein Verlassen beim Super Peer anmelden. Wenn er durch ein Problem offline geht, muss der Super Peer das feststellen und ihn auch aus dem System abmelden.
-
-]
-
-#pagebreak()
-= Aufgabe 1.4
-
-Betrachten Sie das Python-Programm zur Client/Server-Kommunikation im Buch in
-Fig 2.3 (Seite 59, Distributed Systems, Third edition, Version 3.03 (2020)).
-Entwickeln Sie daraus ein Client/Server-Programm in Python über TCP, bei dem
-der Client durch "send time" nach dem Datum und der Uhrzeit fragt, der Server
-dies beantwortet, und der Client die Antwort zur Kontrolle ausgibt. Bringen Sie
-Ihr Programm auf Ihrem Computer zum Laufen! Hinweis: Server- und Client-Prozess
-können auf demselben Computer laufen, die für diesen Testzweck über die
-IP-Nummer 127.0.0.1 (localhost) kommunizieren dürfen. Wählen Sie selbst feste
-Portnummern. Python ist eine Programmiersprache, die immer mehr Bedeutung
-gewinnt und in der jeder Informatiker Erfahrungen gesammelt haben sollte.
-
-#bsolution[Lösung 1.4][
-    #code[Client][
-```python
-from socket import socket, AF_INET, SOCK_STREAM
-
-s = socket(AF_INET, SOCK_STREAM)
-
-s.connect(("127.0.0.1", 8080))
-msg = "send time"
-s.send(msg.encode())
-data = s.recv(1024)
-print(data.decode())
-s.close()
-```
-    ]
-
-    #code[Server][
-```python
-from socket import socket, AF_INET, SOCK_STREAM
-import datetime
-
-s = socket(AF_INET, SOCK_STREAM)
-s.bind(("127.0.0.1", 8080))
-s.listen(5)
-(conn, addr) = s.accept()
-while True:
-    data = conn.recv(1024)
-    if not data:
-        break
-    msg = data.decode()
-    if msg == "send time":
-        now = datetime.datetime.now().__str__()
-        conn.send(now.encode())
-conn.close()
-```
-    ]
-]
-#pagebreak()
-= Aufgabe 1.5
-
-Wir betrachten einen Server mit einem Cache-Bereich in folgendem vereinfachten
-Modell: Der Server bekommt laufend Anfragen, die in 80 % der Fälle mit Hilfe
-des Cache in 5 ms beantwortet werden können. Im ungünstigeren Fall (20 %) ist
-ein langsamer Festplattenzugriff und deshalb zusätzlich 25 ms nötig, hier also
-30 ms pro Anfrage.
-
-- Wie viele Anfragen pro Sekunde kann der Server maximal beantworten, wenn er
-  dafür einen einzigen Prozess ohne weitere Threads einsetzt?
-Wir überlegen nun, ob es vorteilhaft ist, die Anfragen auf eine feste Zahl
-von mehreren parallelen Threads zu verteilen. Die Zeit zur Erzeugung,
-Umschaltung und beim Scheduling von Threads soll vernachlässigt werden.
-
-- Wie viele Anfragen pro Sekunde kann der Server höchstens mit Hilfe von
-  mehreren Threads beantworten?
-- Wie viele Threads sollen sinnvollerweise hier vorgesehen werden?
-
-#bsolution[Lösung 1.5][
-Wenn der Server nur einen Thread benutzt, kann er maximal
-
-$ 1000 = x #sym.dot 0,8 #sym.dot 5 + x #sym.dot 0,2 #sym.dot 30 = x #sym.dot 4
-+ x #sym.dot 6 = x #sym.dot (4 + 6) = x #sym.dot 10 #sym.arrow x = bold(100) $
-
-Anfragen machen.
-
-Mehrere Threads können durch die CPU-Zeit von $5 "ms"$ maximal
-
-$ (1000 "ms") / (5 "ms/req") = bold(200 "req/s") $
-
-machen.
-
-Um diese Zeit auszureizen, müssen wir festlegen, dass
-
-1. Alle CPU aktiv an etwas arbeiten (busy),
-2. Wir genug Threads haben, um die maximale Anzahl an Requests zu erreichen,
-3. Wir daher genug Threads für die I/O Wait Time haben.
-
-Am Peak haben wir $200 "req/s" #sym.dot 0,2% = 40 "req/s"$. Damit brauchen wir $40 "req/s" #sym.dot 30 "ms" = 1200 "ms"$ für alle I/O-Operationen und $160 "req/s" #sym.dot 5 "ms" = 800 "ms"$ für alle Cache-Operationen.
-
-Da wir nur von Threads und nicht von CPU-Kernen sprechen, *müssen mindestens 3 Threads laufen*, um die maximale Anzahl von Requests zu machen. Zwei Threads schaffen es in einer Sekunde nicht, mit der Menge an Anfragen fertig zu werden. Bei 3 Threads kümmern sich zwei um I/O und einer um Cache. Vereinfacht schaffen zwei Threads nach $600 "ms"$ alle I/O-Threads zu beseitigen und der dritte Thread hat bereits
-
-$ (600 "ms") / (30 "ms/req") #sym.dot 4 = 80 "req" $
-
-erledigt. Die restlichen $400 "ms"$ reichen dann für die restlichen $80 "req" = (400 "ms") / (5 "ms/req")$ aus.
-]
