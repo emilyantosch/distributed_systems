@@ -135,7 +135,38 @@ Publish/Subscribe. Bringen Sie das Programm auf Ihrem Computer zum Laufen, der
 Subscriber (Client) soll einfach immer wieder nach der Zeit fragen. Zum Testen
 starten Sie einen Publisher und mehrere Subscriber gleichzeitig.
 
-#bsolution[Lösung 2.3][]
+#bsolution[Lösung 2.3][
+  Wenn man die Funktionen `client()` und `server()` in verschiedene Dateien teilt und das Package `pyzmq` installiert, werden auch bei mehreren clients (parallel ausgeführt mittels `tmux`), auch die entsprechenden fünf Nachrichten eines einzelnen Servers ausgeteilt.
+  ```python
+import zmq
+import time
+
+def server():
+    context = zmq.Context()
+    socket = context.socket(zmq.PUB)
+    socket.bind("tcp://*:12345")
+    while True:
+        time.sleep(5)
+        t = "TIME " + time.asctime()
+        socket.send(t.encode())
+
+server()
+  ```
+  ```python
+import zmq
+def client():
+    context = zmq.Context()
+    socket = context.socket(zmq.SUB)
+    socket.connect("tcp://localhost:12345")
+    socket.setsockopt(zmq.SUBSCRIBE, b"TIME")
+
+    for i in range(5):
+        time = socket.recv()
+        print(time.decode())
+
+client()
+  ```
+]
 
 #pagebreak()
 
